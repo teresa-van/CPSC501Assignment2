@@ -88,22 +88,22 @@ public class Inspector {
 		if (methods.length == 0) System.out.println("\t No methods declared.\n");
 		else
 		{
-			for (Method m : methods)
+			for (Method method : methods)
 			{
-				System.out.println("\t Method Name: " + m.getName());
+				System.out.println("\t Method Name: " + method.getName());
 				
 				System.out.println("\t Exceptions Thrown: ");
-				Class[] exceptions = m.getExceptionTypes();
+				Class[] exceptions = method.getExceptionTypes();
 				if (exceptions.length == 0) System.out.println("\t\t None");
 				else for (Class e : exceptions) System.out.println("\t\t" + e.getName());
 				
 				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = m.getParameters();
+				Parameter[] parameters = method.getParameters();
 				if (parameters.length == 0) System.out.println("\t\t None");
 				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
 				
-				System.out.println("\t Return Type: " + m.getReturnType());
-				int mod = m.getModifiers();
+				System.out.println("\t Return Type: " + method.getReturnType());
+				int mod = method.getModifiers();
 				System.out.println("\t Modifiers: " + Modifier.toString(mod));
 				System.out.println("\n");
 			}
@@ -117,16 +117,16 @@ public class Inspector {
 		if (constructors.length == 0) System.out.println("\t No constructors declared.\n");
 		else
 		{
-			for (Constructor c : constructors)
+			for (Constructor constructor : constructors)
 			{
-				System.out.println("\t Constructor Name: " + c.getName());
+				System.out.println("\t Constructor Name: " + constructor.getName());
 
 				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = c.getParameters();
+				Parameter[] parameters = constructor.getParameters();
 				if (parameters.length == 0) System.out.println("\t\t None");
 				else for (Parameter p : parameters) System.out.println("\t\t " + p.getType().toString());
 
-				int mod = c.getModifiers();
+				int mod = constructor.getModifiers();
 				System.out.println("\t Modifiers: " + Modifier.toString(mod));
 				System.out.println("\n");
 			}
@@ -140,12 +140,12 @@ public class Inspector {
 		if (fields.length == 0) System.out.println("\t No fields declared.\n");
 		else
 		{
-			for (Field f : fields)
+			for (Field field : fields)
 			{
-				System.out.println("\t Field Name: " + f.getName());
+				System.out.println("\t Field Name: " + field.getName());
 
-				System.out.println("\t Type: " + f.getType().toString());
-				int mod = f.getModifiers();
+				System.out.println("\t Type: " + field.getType().toString());
+				int mod = field.getModifiers();
 				System.out.println("\t Modifiers: " + Modifier.toString(mod));
 				System.out.println("\n");
 			}
@@ -159,19 +159,19 @@ public class Inspector {
 		if (fields.length == 0) System.out.println("\t No fields.\n");
 		else
 		{
-			for (Field f : fields)
+			for (Field field : fields)
 			{
 				try 
 				{
-					f.setAccessible(true);
-					Object value = f.get(obj);
+					field.setAccessible(true);
+					Object value = field.get(obj);
 					try
 					{
 						if (value.getClass().isPrimitive() || isWrapperType(value.getClass())) 
-							System.out.println("\t " + f.getName() + " = " + f.get(obj).toString());
+							System.out.println("\t " + field.getName() + " = " + field.get(obj).toString());
 						else if (value.getClass().isArray())
 						{
-							System.out.println("\t " + f.getName() + " = Array");
+							System.out.println("\t " + field.getName() + " = Array");
 							System.out.println("\t\t Component Type: " + value.getClass().getComponentType());
 							System.out.println("\t\t Length: " + Array.getLength(value));
 							System.out.print("\t\t Contents: [");
@@ -184,14 +184,14 @@ public class Inspector {
 						}
 						else
 						{
-							System.out.println("\t " + value.getClass().getName() + " " + f.hashCode());
+							System.out.println("\t " + value.getClass().getName() + " " + field.hashCode());
 							if (recursive) 
 							{
 								if (!ObjectsToInspect.contains(value)) ObjectsToInspect.add(value);
 							}
 						}
 					}
-					catch (NullPointerException e) { System.out.println("\t " + f.getName() + " = Null"); }
+					catch (NullPointerException e) { System.out.println("\t " + field.getName() + " = Null"); }
 				}
 				catch (Exception e) { e.printStackTrace(); }
 			}

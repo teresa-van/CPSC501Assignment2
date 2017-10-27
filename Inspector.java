@@ -11,6 +11,7 @@ import java.lang.reflect.*;
 
 public class Inspector {
 	
+	//Data structures for holding classes/objects to inspect, and the classes that have already been inspected
 	private static Queue<Class> ClassesToInspect = new ArrayDeque<Class>();
 	private static Queue<Object> ObjectsToInspect = new ArrayDeque<Object>();
 	private static ArrayList<Class> Inspected = new ArrayList<Class>();
@@ -24,9 +25,14 @@ public class Inspector {
 	}
 	//
 	
+	/*
+	 * Constructor
+	 */
 	public Inspector() { }
 	
-	
+	/*
+	 * Method that does object inspection, outputs all the required information
+	 */
 	public void inspect(Object obj, boolean recursive)
 	{		
 		Class objClass = obj.getClass();
@@ -45,6 +51,9 @@ public class Inspector {
 	}
 	
 	
+	/*
+	 * Method that does class inspection, outputs the class name, superclass, interfaces, methods, and fields.
+	 */
 	public void inspectClass(Class objClass)
 	{
 		Inspected.add(objClass);
@@ -68,7 +77,9 @@ public class Inspector {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	
+	/*
+	 * Method for inspecting interfaces of a class
+	 */
 	public void InspectInterfaces(Class objClass)
 	{
 		System.out.println("Name of Implemented Interfaces: ");
@@ -81,6 +92,9 @@ public class Inspector {
 		}
 	}
 	
+	/*
+	 * Method for inspecting methods of a class
+	 */
 	public void InspectMethods(Class objClass)
 	{
 		System.out.println("Methods the Class Declares: ");
@@ -110,6 +124,9 @@ public class Inspector {
 		}
 	}
 
+	/*
+	 * Method for inspecting constructors of a class
+	 */
 	public void InspectConstructors(Class objClass)
 	{
 		System.out.println("Constructions the Class Declares: ");
@@ -133,6 +150,9 @@ public class Inspector {
 		}
 	}
 	
+	/*
+	 * Method for inspecting fields of a class
+	 */
 	public void InspectFields(Class objClass)
 	{
 		System.out.println("Fields the Class Declares: ");
@@ -152,6 +172,9 @@ public class Inspector {
 		}
 	}
 	
+	/*
+	 * Method for inspecting field values of a class
+	 */
 	public void InspectFieldValues(Class objClass, Object obj, boolean recursive)
 	{
 		System.out.println("Current Value of Each Field: ");
@@ -163,12 +186,15 @@ public class Inspector {
 			{
 				try 
 				{
+					//Set field to accessible and get the value of the object
 					field.setAccessible(true);
 					Object value = field.get(obj);
 					try
 					{
+						//Check if the value is a primitive or not
 						if (value.getClass().isPrimitive() || isWrapperType(value.getClass())) 
 							System.out.println("\t " + field.getName() + " = " + field.get(obj).toString());
+						//Check if the value is an array
 						else if (value.getClass().isArray())
 						{
 							System.out.println("\t " + field.getName() + " = Array");
@@ -182,6 +208,7 @@ public class Inspector {
 							}
 							System.out.println("]\n");
 						}
+						//Add object to queue if recursive is set to true and if value is an object reference
 						else
 						{
 							System.out.println("\t " + value.getClass().getName() + " " + field.hashCode());
@@ -199,8 +226,12 @@ public class Inspector {
 		}
 	}
 	
+	/*
+	 * Method for recursively inspecting the objects/classes stored in the queue
+	 */
 	public void InspectRecursively(boolean recursive)
 	{
+		//Inspect all classes in the class queue
 		while (!ClassesToInspect.isEmpty())
 		{
 			if (ClassesToInspect.element().getName().equals("java.lang.Class") || 
@@ -215,6 +246,8 @@ public class Inspector {
 				catch (Exception e) { e.printStackTrace(); }
 			}
 		}
+		
+		//Inspect all objects in the object queue
 		while (!ObjectsToInspect.isEmpty())
 		{
 			if (ObjectsToInspect.element().getClass().getName().equals("java.lang.Class") || 
@@ -230,6 +263,7 @@ public class Inspector {
 			}
 		}
 		
+		//Clear all data structures for future test cases
 		ObjectsToInspect.clear();
 		ClassesToInspect.clear();
 		Inspected.clear();

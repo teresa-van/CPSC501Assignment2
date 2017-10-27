@@ -31,7 +31,7 @@ public class Inspector {
 		Class objClass = obj.getClass();
 		System.out.println("=======================================================");
 		System.out.println("OBJECT: " + obj.hashCode());
-		if (!Inspected.contains(objClass)) inspectClass(objClass, recursive);
+		if (!Inspected.contains(objClass)) inspectClass(objClass);
 		else
 		{
 			System.out.println("=======================================================");
@@ -82,39 +82,12 @@ public class Inspector {
 			}
 			System.out.println("\n");
 		}
-		
-		while (!ClassesToInspect.isEmpty())
-		{
-			if (ClassesToInspect.element().getName().equals("java.lang.Class") || 
-					ClassesToInspect.element().getName().equals("java.lang.Object")) ClassesToInspect.remove();
-			else
-			{
-				try
-				{
-					System.out.println("\n\n");
-					inspectClass(ClassesToInspect.remove(), recursive);
-				}
-				catch (Exception e) { e.printStackTrace(); }
-			}
-		}
-		while (!ObjectsToInspect.isEmpty())
-		{
-			if (ObjectsToInspect.element().getClass().getName().equals("java.lang.Class") || 
-					ObjectsToInspect.element().getClass().getName().equals("java.lang.Object")) ObjectsToInspect.remove();
-			else
-			{
-				try
-				{
-					System.out.println("\n\n");
-					inspect(ObjectsToInspect.remove(), recursive);
-				}
-				catch (Exception e) { e.printStackTrace(); }
-			}
-		}
+	
+		InspectAll(recursive);
 	}
 	
 	
-	public void inspectClass(Class objClass, boolean recursive)
+	public void inspectClass(Class objClass)
 	{
 		Inspected.add(objClass);
 		
@@ -197,5 +170,41 @@ public class Inspector {
 				System.out.println("\n");
 			}
 		}
+	}
+	
+	public void InspectAll(boolean recursive)
+	{
+		while (!ClassesToInspect.isEmpty())
+		{
+			if (ClassesToInspect.element().getName().equals("java.lang.Class") || 
+					ClassesToInspect.element().getName().equals("java.lang.Object")) ClassesToInspect.remove();
+			else
+			{
+				try
+				{
+					System.out.println("\n\n");
+					inspectClass(ClassesToInspect.remove());
+				}
+				catch (Exception e) { e.printStackTrace(); }
+			}
+		}
+		while (!ObjectsToInspect.isEmpty())
+		{
+			if (ObjectsToInspect.element().getClass().getName().equals("java.lang.Class") || 
+					ObjectsToInspect.element().getClass().getName().equals("java.lang.Object")) ObjectsToInspect.remove();
+			else
+			{
+				try
+				{
+					System.out.println("\n\n");
+					inspect(ObjectsToInspect.remove(), recursive);
+				}
+				catch (Exception e) { e.printStackTrace(); }
+			}
+		}
+		
+		ObjectsToInspect.clear();
+		ClassesToInspect.clear();
+		Inspected.clear();
 	}
 }

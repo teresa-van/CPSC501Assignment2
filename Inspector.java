@@ -32,77 +32,10 @@ public class Inspector {
 		
 		Class objClass = obj.getClass();
 
-		System.out.println("Name of declaring class: " + objClass.getName());
-		System.out.println("Name of Immediate Superclass: " + objClass.getSuperclass().getName());
-		if (!Inspected.contains(objClass.getSuperclass()) && !ClassesToInspect.contains(objClass.getSuperclass())) ClassesToInspect.add(objClass.getSuperclass());
-		
-		System.out.println("Name of Interfaces: ");
-		Class[] interfaces = objClass.getInterfaces();
-		if (interfaces.length == 0) System.out.println("\t No interfaces are implemented by this class.\n");
-		else for (Class i : interfaces) System.out.println("\t " + i.getName());
-		
-		System.out.println("Methods the Class Declares: ");
-		Method[] methods = objClass.getDeclaredMethods();
-		if (methods.length == 0) System.out.println("\t No methods declared.\n");
-		else
-		{
-			for (Method m : methods)
-			{
-				System.out.println("\t Method Name: " + m.getName());
-				
-				System.out.println("\t Exceptions Thrown: ");
-				Class[] exceptions = m.getExceptionTypes();
-				if (exceptions.length == 0) System.out.println("\t\t None");
-				else for (Class e : exceptions) System.out.println("\t\t" + e.getName());
-				
-				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = m.getParameters();
-				if (parameters.length == 0) System.out.println("\t\t None");
-				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
-				
-				System.out.println("\t Return Type: " + m.getReturnType());
-				int mod = m.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
-		System.out.println("Constructions the Class Declares: ");
-		Constructor[] constructors = objClass.getDeclaredConstructors();
-		if (constructors.length == 0) System.out.println("\t No constructors declared.\n");
-		else
-		{
-			for (Constructor c : constructors)
-			{
-				System.out.println("\t Constructor Name: " + c.getName());
-
-				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = c.getParameters();
-				if (parameters.length == 0) System.out.println("\t\t None");
-				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
-
-				int mod = c.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
-		
-		System.out.println("Fields the Class Declares: ");
-		Field[] fields = objClass.getDeclaredFields();
-		if (fields.length == 0) System.out.println("\t No fields declared.\n");
-		else
-		{
-			for (Field f : fields)
-			{
-				System.out.println("\t Field Name: " + f.getName());
-
-				System.out.println("\t Type: " + f.getType().toString());
-				int mod = f.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
+		inspectClass(objClass, recursive);
 		
 		System.out.println("Current Value of Each Field: ");
+		Field[] fields = objClass.getDeclaredFields();
 		if (fields.length == 0) System.out.println("\t No fields.\n");
 		else
 		{
@@ -134,11 +67,7 @@ public class Inspector {
 							System.out.println("\t " + value.getClass().getName() + " " + f.hashCode());
 							if (recursive) 
 							{
-								if (!Inspected.contains(value.getClass()) && !ObjectsToInspect.contains(value) && !ClassesToInspect.contains(value.getClass()))
-								{
-									ObjectsToInspect.add(value);
-									Inspected.add(value.getClass());
-								}
+								if (!ObjectsToInspect.contains(value)) ObjectsToInspect.add(value);
 							}
 						}
 					}
@@ -147,7 +76,7 @@ public class Inspector {
 				catch (Exception e) { e.printStackTrace(); }
 			}
 		}
-		System.out.println("\n\n\n");
+		System.out.println("\n");
 		
 		while (!ClassesToInspect.isEmpty())
 		{
@@ -251,6 +180,6 @@ public class Inspector {
 				System.out.println("\n");
 			}
 		}
-		System.out.println("\n\n\n");
+		System.out.println("\n");
 	}
 }

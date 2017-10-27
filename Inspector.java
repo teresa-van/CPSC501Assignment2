@@ -26,6 +26,7 @@ public class Inspector {
 	
 	public Inspector() { }
 	
+	
 	public void inspect(Object obj, boolean recursive)
 	{		
 		Class objClass = obj.getClass();
@@ -39,6 +40,120 @@ public class Inspector {
 		}
 		
 		Inspected.add(obj.getClass());
+		InspectFieldValues(objClass, obj, recursive);	
+		InspectRecursively(recursive);
+	}
+	
+	
+	public void inspectClass(Class objClass)
+	{
+		Inspected.add(objClass);
+		
+		System.out.println("=======================================================");
+		
+		if (!objClass.isInterface())
+		{
+			System.out.println("Name of Declaring Class: " + objClass.getName());
+			System.out.println("Name of Immediate Superclass: " + objClass.getSuperclass().getName());
+			if (!Inspected.contains(objClass.getSuperclass()) && !ClassesToInspect.contains(objClass.getSuperclass())) ClassesToInspect.add(objClass.getSuperclass());
+		}
+		else System.out.println("Name of Interface: " + objClass.getName());
+		
+		InspectInterfaces(objClass);
+		InspectMethods(objClass);
+		InspectConstructors(objClass);
+		InspectFields(objClass);
+	}
+
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public void InspectInterfaces(Class objClass)
+	{
+		System.out.println("Name of Implemented Interfaces: ");
+		Class[] interfaces = objClass.getInterfaces();
+		if (interfaces.length == 0) System.out.println("\t No interfaces are implemented by this class.\n");
+		else for (Class i : interfaces)
+		{
+			if (!Inspected.contains(i) && !ClassesToInspect.contains(i)) ClassesToInspect.add(i);
+			System.out.println("\t " + i.getName());
+		}
+	}
+	
+	public void InspectMethods(Class objClass)
+	{
+		System.out.println("Methods the Class Declares: ");
+		Method[] methods = objClass.getDeclaredMethods();
+		if (methods.length == 0) System.out.println("\t No methods declared.\n");
+		else
+		{
+			for (Method m : methods)
+			{
+				System.out.println("\t Method Name: " + m.getName());
+				
+				System.out.println("\t Exceptions Thrown: ");
+				Class[] exceptions = m.getExceptionTypes();
+				if (exceptions.length == 0) System.out.println("\t\t None");
+				else for (Class e : exceptions) System.out.println("\t\t" + e.getName());
+				
+				System.out.println("\t Parameter Types: ");
+				Parameter[] parameters = m.getParameters();
+				if (parameters.length == 0) System.out.println("\t\t None");
+				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
+				
+				System.out.println("\t Return Type: " + m.getReturnType());
+				int mod = m.getModifiers();
+				System.out.println("\t Modifiers: " + Modifier.toString(mod));
+				System.out.println("\n");
+			}
+		}
+	}
+
+	public void InspectConstructors(Class objClass)
+	{
+		System.out.println("Constructions the Class Declares: ");
+		Constructor[] constructors = objClass.getDeclaredConstructors();
+		if (constructors.length == 0) System.out.println("\t No constructors declared.\n");
+		else
+		{
+			for (Constructor c : constructors)
+			{
+				System.out.println("\t Constructor Name: " + c.getName());
+
+				System.out.println("\t Parameter Types: ");
+				Parameter[] parameters = c.getParameters();
+				if (parameters.length == 0) System.out.println("\t\t None");
+				else for (Parameter p : parameters) System.out.println("\t\t " + p.getType().toString());
+
+				int mod = c.getModifiers();
+				System.out.println("\t Modifiers: " + Modifier.toString(mod));
+				System.out.println("\n");
+			}
+		}
+	}
+	
+	public void InspectFields(Class objClass)
+	{
+		System.out.println("Fields the Class Declares: ");
+		Field[] fields = objClass.getDeclaredFields();
+		if (fields.length == 0) System.out.println("\t No fields declared.\n");
+		else
+		{
+			for (Field f : fields)
+			{
+				System.out.println("\t Field Name: " + f.getName());
+
+				System.out.println("\t Type: " + f.getType().toString());
+				int mod = f.getModifiers();
+				System.out.println("\t Modifiers: " + Modifier.toString(mod));
+				System.out.println("\n");
+			}
+		}
+	}
+	
+	public void InspectFieldValues(Class objClass, Object obj, boolean recursive)
+	{
 		System.out.println("Current Value of Each Field: ");
 		Field[] fields = objClass.getDeclaredFields();
 		if (fields.length == 0) System.out.println("\t No fields.\n");
@@ -82,97 +197,9 @@ public class Inspector {
 			}
 			System.out.println("\n");
 		}
-	
-		InspectAll(recursive);
 	}
 	
-	
-	public void inspectClass(Class objClass)
-	{
-		Inspected.add(objClass);
-		
-		System.out.println("=======================================================");
-		
-		if (!objClass.isInterface())
-		{
-			System.out.println("Name of Declaring Class: " + objClass.getName());
-			System.out.println("Name of Immediate Superclass: " + objClass.getSuperclass().getName());
-			if (!Inspected.contains(objClass.getSuperclass()) && !ClassesToInspect.contains(objClass.getSuperclass())) ClassesToInspect.add(objClass.getSuperclass());
-		}
-		else System.out.println("Name of Interface: " + objClass.getName());
-		
-		System.out.println("Name of Implemented Interfaces: ");
-		Class[] interfaces = objClass.getInterfaces();
-		if (interfaces.length == 0) System.out.println("\t No interfaces are implemented by this class.\n");
-		else for (Class i : interfaces)
-		{
-			if (!Inspected.contains(i) && !ClassesToInspect.contains(i)) ClassesToInspect.add(i);
-			System.out.println("\t " + i.getName());
-		}
-		
-		System.out.println("Methods the Class Declares: ");
-		Method[] methods = objClass.getDeclaredMethods();
-		if (methods.length == 0) System.out.println("\t No methods declared.\n");
-		else
-		{
-			for (Method m : methods)
-			{
-				System.out.println("\t Method Name: " + m.getName());
-				
-				System.out.println("\t Exceptions Thrown: ");
-				Class[] exceptions = m.getExceptionTypes();
-				if (exceptions.length == 0) System.out.println("\t\t None");
-				else for (Class e : exceptions) System.out.println("\t\t" + e.getName());
-				
-				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = m.getParameters();
-				if (parameters.length == 0) System.out.println("\t\t None");
-				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
-				
-				System.out.println("\t Return Type: " + m.getReturnType());
-				int mod = m.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
-		System.out.println("Constructions the Class Declares: ");
-		Constructor[] constructors = objClass.getDeclaredConstructors();
-		if (constructors.length == 0) System.out.println("\t No constructors declared.\n");
-		else
-		{
-			for (Constructor c : constructors)
-			{
-				System.out.println("\t Constructor Name: " + c.getName());
-
-				System.out.println("\t Parameter Types: ");
-				Parameter[] parameters = c.getParameters();
-				if (parameters.length == 0) System.out.println("\t\t None");
-				else for (Parameter p : parameters) System.out.println("\t\t" + p.getType().toString());
-
-				int mod = c.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
-		
-		System.out.println("Fields the Class Declares: ");
-		Field[] fields = objClass.getDeclaredFields();
-		if (fields.length == 0) System.out.println("\t No fields declared.\n");
-		else
-		{
-			for (Field f : fields)
-			{
-				System.out.println("\t Field Name: " + f.getName());
-
-				System.out.println("\t Type: " + f.getType().toString());
-				int mod = f.getModifiers();
-				System.out.println("\t Modifiers: " + Modifier.toString(mod));
-				System.out.println("\n");
-			}
-		}
-	}
-	
-	public void InspectAll(boolean recursive)
+	public void InspectRecursively(boolean recursive)
 	{
 		while (!ClassesToInspect.isEmpty())
 		{

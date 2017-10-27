@@ -3,7 +3,7 @@
  * Written by: Teresa Van (10149274)
  * This class is a reflection object inspector that does a complete introspection of an object at runtime.
  * Created: October 26th, 2017
- * Last Modified: October 26th, 2017
+ * Last Modified: October 27th, 2017
  */
 
 import java.util.*;
@@ -247,19 +247,22 @@ public class Inspector {
 			}
 		}
 		
-		//Inspect all objects in the object queue
-		while (!ObjectsToInspect.isEmpty())
+		if (recursive)
 		{
-			if (ObjectsToInspect.element().getClass().getName().equals("java.lang.Class") || 
-					ObjectsToInspect.element().getClass().getName().equals("java.lang.Object")) ObjectsToInspect.remove();
-			else
+			//Inspect all objects in the object queue
+			while (!ObjectsToInspect.isEmpty())
 			{
-				try
+				if (ObjectsToInspect.element().getClass().getName().equals("java.lang.Class") || 
+						ObjectsToInspect.element().getClass().getName().equals("java.lang.Object")) ObjectsToInspect.remove();
+				else
 				{
-					System.out.println("\n\n");
-					inspect(ObjectsToInspect.remove(), recursive);
+					try
+					{
+						System.out.println("\n\n");
+						inspect(ObjectsToInspect.remove(), recursive);
+					}
+					catch (Exception e) { e.printStackTrace(); }
 				}
-				catch (Exception e) { e.printStackTrace(); }
 			}
 		}
 		

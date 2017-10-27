@@ -27,13 +27,18 @@ public class Inspector {
 	public Inspector() { }
 	
 	public void inspect(Object obj, boolean recursive)
-	{
-		Inspected.add(obj.getClass());
-		
+	{		
 		Class objClass = obj.getClass();
-
-		inspectClass(objClass, recursive);
+		System.out.println("=======================================================");
+		System.out.println("OBJECT: " + obj.hashCode());
+		if (!Inspected.contains(objClass)) inspectClass(objClass, recursive);
+		else
+		{
+			System.out.println("=======================================================");
+			System.out.println("Name of Declaring Class: " + objClass.getName());
+		}
 		
+		Inspected.add(obj.getClass());
 		System.out.println("Current Value of Each Field: ");
 		Field[] fields = objClass.getDeclaredFields();
 		if (fields.length == 0) System.out.println("\t No fields.\n");
@@ -75,8 +80,8 @@ public class Inspector {
 				}
 				catch (Exception e) { e.printStackTrace(); }
 			}
+			System.out.println("\n");
 		}
-		System.out.println("\n");
 		
 		while (!ClassesToInspect.isEmpty())
 		{
@@ -86,6 +91,7 @@ public class Inspector {
 			{
 				try
 				{
+					System.out.println("\n\n");
 					inspectClass(ClassesToInspect.remove(), recursive);
 				}
 				catch (Exception e) { e.printStackTrace(); }
@@ -99,6 +105,7 @@ public class Inspector {
 			{
 				try
 				{
+					System.out.println("\n\n");
 					inspect(ObjectsToInspect.remove(), recursive);
 				}
 				catch (Exception e) { e.printStackTrace(); }
@@ -111,14 +118,24 @@ public class Inspector {
 	{
 		Inspected.add(objClass);
 		
-		System.out.println("Name of declaring class: " + objClass.getName());
-		System.out.println("Name of Immediate Superclass: " + objClass.getSuperclass().getName());
-		if (!Inspected.contains(objClass.getSuperclass()) && !ClassesToInspect.contains(objClass.getSuperclass())) ClassesToInspect.add(objClass.getSuperclass());
+		System.out.println("=======================================================");
 		
-		System.out.println("Name of Interfaces: ");
+		if (!objClass.isInterface())
+		{
+			System.out.println("Name of Declaring Class: " + objClass.getName());
+			System.out.println("Name of Immediate Superclass: " + objClass.getSuperclass().getName());
+			if (!Inspected.contains(objClass.getSuperclass()) && !ClassesToInspect.contains(objClass.getSuperclass())) ClassesToInspect.add(objClass.getSuperclass());
+		}
+		else System.out.println("Name of Interface: " + objClass.getName());
+		
+		System.out.println("Name of Implemented Interfaces: ");
 		Class[] interfaces = objClass.getInterfaces();
 		if (interfaces.length == 0) System.out.println("\t No interfaces are implemented by this class.\n");
-		else for (Class i : interfaces) System.out.println("\t " + i.getName());
+		else for (Class i : interfaces)
+		{
+			if (!Inspected.contains(i) && !ClassesToInspect.contains(i)) ClassesToInspect.add(i);
+			System.out.println("\t " + i.getName());
+		}
 		
 		System.out.println("Methods the Class Declares: ");
 		Method[] methods = objClass.getDeclaredMethods();
@@ -180,6 +197,5 @@ public class Inspector {
 				System.out.println("\n");
 			}
 		}
-		System.out.println("\n");
 	}
 }

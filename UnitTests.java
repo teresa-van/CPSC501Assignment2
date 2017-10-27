@@ -28,9 +28,9 @@ class UnitTests {
 				    		" java.io.Serializable" + 
 				    		" java.lang.Runnable";
 		expected = expected.replaceAll("\\s", "");
-		String result = outContent.toString().replaceAll("\\s+","");
-		result = result.replaceAll("", "");
-		expected = expected.replaceAll("", "");
+		String result = outContent.toString().replaceAll("\\s","");
+		result = result.replaceAll("\n", "");
+		expected = expected.replaceAll("\n", "");
 		result = result.replaceAll("\t", "");
 		expected = expected.replaceAll("\t", "");
 		
@@ -62,9 +62,9 @@ class UnitTests {
 				"                 int" + 
 				"         Modifiers: public";
 		expected = expected.replaceAll("\\s", "");
-		String result = outContent.toString().replaceAll("\\s+","");
-		result = result.replaceAll("", "");
-		expected = expected.replaceAll("", "");
+		String result = outContent.toString().replaceAll("\\s","");
+		result = result.replaceAll("\n", "");
+		expected = expected.replaceAll("\n", "");
 		result = result.replaceAll("\t", "");
 		expected = expected.replaceAll("\t", "");
 		
@@ -100,9 +100,9 @@ class UnitTests {
 				"         Type: class [I" + 
 				"         Modifiers: private";
 		expected = expected.replaceAll("\\s", "");
-		String result = outContent.toString().replaceAll("\\s+","");
-		result = result.replaceAll("", "");
-		expected = expected.replaceAll("", "");
+		String result = outContent.toString().replaceAll("\\s","");
+		result = result.replaceAll("\n", "");
+		expected = expected.replaceAll("\n", "");
 		result = result.replaceAll("\t", "");
 		expected = expected.replaceAll("\t", "");
 		
@@ -133,9 +133,9 @@ class UnitTests {
 				"                 Length: 4" + 
 				"                 Contents: [1,2,3,4]";
 		expected = expected.replaceAll("\\s", "");
-		String result = outContent.toString().replaceAll("\\s+","");
-		result = result.replaceAll("", "");
-		expected = expected.replaceAll("", "");
+		String result = outContent.toString().replaceAll("\\s","");
+		result = result.replaceAll("\n", "");
+		expected = expected.replaceAll("\n", "");
 		result = result.replaceAll("\t", "");
 		expected = expected.replaceAll("\t", "");
 		
